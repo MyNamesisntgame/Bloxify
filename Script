@@ -4,7 +4,8 @@ To the begining of the script
 
 or just use the loadstring:
 
-
+getgenv().apikey = "OAuth token here"
+loadstring(game:HttpGet("https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script"))()
 
 { Get OAuth token here: }
 https://developer.spotify.com/console/get-users-currently-playing-track
