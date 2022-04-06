@@ -1,10 +1,10 @@
 --[[ If you arent using the loadstring then add
-getgenv().apikey = "Your OAuth Token Here"
+getgenv().apikey = "OAuth token Here"
 To the begining of the script
 
 or just use the loadstring:
 
-getgenv().apikey = "OAuth token Here"
+getgenv().apikey = "OAuth token here"
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script"))()
 
 { Get OAuth token here: }
