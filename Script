@@ -1,10 +1,10 @@
 --[[ If you arent using the loadstring then add
-getgenv().apikey = "OAuth token here"
+getgenv().apikey = "Your OAuth Token Here"
 To the begining of the script
 
 or just use the loadstring:
 
-getgenv().apikey = "OAuth token here"
+getgenv().apikey = "OAuth token Here"
 loadstring(game:HttpGet("https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script"))()
 
 { Get OAuth token here: }
@@ -144,7 +144,7 @@ local addSong = function(uri)
     })
 end
 
-notify("ROBLOX Spotify", "Successfully loaded!\nPress P to open and close!", 0.5)
+notify("ROBLOX Spotify", "Successfully loaded!\nPress Home to open and close!", 0.5)
 
 local Spotify = Instance.new("ScreenGui")
 local Main = Instance.new("Frame")
@@ -378,8 +378,8 @@ Result_Artist.Parent = ExampleResult
 Result_Artist.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Result_Artist.BackgroundTransparency = 1.000
 Result_Artist.BorderSizePixel = 0
-Result_Artist.Position = UDim2.new(0.556, 0, 0, 0)
-Result_Artist.Size = UDim2.new(0, 348, 0, 20)
+Result_Artist.Position = UDim2.new(0, 0, 0.45, 0)
+Result_Artist.Size = UDim2.new(0, 586, 0, 20)
 Result_Artist.Font = Enum.Font.SourceSans
 Result_Artist.Text = "Artist"
 Result_Artist.TextColor3 = Color3.fromRGB(168, 168, 168)
@@ -401,27 +401,24 @@ Result_Title.TextXAlignment = Enum.TextXAlignment.Left
 Result_Title.TextYAlignment = Enum.TextYAlignment.Bottom
 
 Result_Clicked.Name = "Result_Clicked"
-Result_Clicked.Position = UDim2.new(0.556, 0, 0, 0)
+Result_Clicked.Position = UDim2.new(0, 0, 0, 0)
 Result_Clicked.Parent = ExampleResult
 Result_Clicked.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Result_Clicked.BackgroundTransparency = 1.000
 Result_Clicked.BorderSizePixel = 0
-Result_Clicked.Size = UDim2.new(0, 586, 0, 40)
+Result_Clicked.Size = UDim2.new(0, 585, 0, 40)
 Result_Clicked.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
 Result_Clicked.ImageTransparency = 1.000
 
 Logo.Name = "Logo"
 Logo.Parent = SearchBox
 Logo.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-Logo.BackgroundTransparency = 0
+Logo.BackgroundTransparency = 1
 Logo.BorderSizePixel = 0
 Logo.Position = UDim2.new(-0.118, 0, -1.3, 0)
 Logo.Size = UDim2.new(0, 725, 0, 38)
 Logo.Image = "http://www.roblox.com/asset/?id=9292317432"
 Logo.ScaleType = Enum.ScaleType.Fit
-
-LogoCorner.CornerRadius = UDim.new(0, 10)
-LogoCorner.Parent = Logo
 
 CurrentAlbumCover.Visible = true
 CurrentAlbumCover.Size = Vector2.new(36, 36)
@@ -441,7 +438,7 @@ ExampleResult.Visible = false
 
 uis.InputBegan:Connect(
     function(input, bruh)
-        if (input.KeyCode == Enum.KeyCode.P) then
+        if (input.KeyCode == Enum.KeyCode.Home) then
             if (Main.Visible == true) then
                 Main.Visible = false
 
