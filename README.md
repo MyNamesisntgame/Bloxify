@@ -9,6 +9,7 @@ or just use the loadstring:
 getgenv().apikey = "OAuth token here"
 repeat wait() until game.Players.LocalPlayer.Character
 url = "https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script"
+
 loadstring(game:HttpGet(url))()
 
 { Get OAuth token here: }
