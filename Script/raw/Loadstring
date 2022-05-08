@@ -1,0 +1,7 @@
+-- [[ Get OAuth Token Here: https://linktr.ee/bloxify ]] --
+-- [[ Do not change anything in this and dont make this your own loadstring it wont work like that ]] --
+
+getgenv().apikey = "Your Oauth Token"
+repeat wait() until game.Players.LocalPlayer.Character
+url = "https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script/Spotify"
+loadstring(game:HttpGet(url))()
