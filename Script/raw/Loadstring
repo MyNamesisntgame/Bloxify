@@ -1,4 +1,4 @@
--- [[ Get OAuth Token Here: https://linktr.ee/bloxify ]] --
+-- [[ https://discord.gg/uMF7R7d2fp for the important stuff like where to get OAuth token and support ]] --
 -- [[ Do not change anything in this and dont make this your own loadstring it wont work like that ]] --
 
 getgenv().apikey = "Your Oauth Token"
