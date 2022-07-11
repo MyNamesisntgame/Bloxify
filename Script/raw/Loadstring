@@ -5,5 +5,5 @@
 
 getgenv().apikey = "Replace with your OAuth Token"
 repeat wait() until game.Players.LocalPlayer.Character
-url = "https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script/Spotify"
+url = "https://raw.githubusercontent.com/MyNamesGabe/Bloxify/main/Script/Spotify"
 loadstring(game:HttpGet(url))()
