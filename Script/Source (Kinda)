@@ -1,4 +1,7 @@
-getgenv().apikey = "Token here"
+--[[ Script will do nothing unless you make a ui compatible with it.
+If you do end up making it your own make sure to add this to the top
+
+getgenv().apikey = "Token here" ]]--
 
 if (not apikey) then
     game.Players.LocalPlayer:Kick("What to do if this happens here: https://linktr.ee/bloxify") 
