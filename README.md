@@ -4,12 +4,7 @@ Hi, first of all if you are here from the discord about me. Welcom this is Bloxi
 
 you are able to search songs pause play skip ect.
 
-Script:
+the script is in script (duh) raw is just a loadstring already made for you
 
-getgenv().apikey = "OAuth token"
-repeat wait() until game.Players.LocalPlayer.Character
-url = "https://raw.githubusercontent.com/MyNamesGabe/Roblox-Spotify/main/Script/Spotify"
-loadstring(game:HttpGet(url))()
-
-important stuff are in this linktree (How to get OAuth token how to use ect.)
+all you will need to know about this script will be in this linktree showing How to get OAuth token, how to use, ect.
 https://linktr.ee/bloxify
