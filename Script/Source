@@ -1,0 +1,291 @@
+getgenv().apikey = "Token here"
+
+if (not apikey) then
+    game.Players.LocalPlayer:Kick("What to do if this happens here: https://linktr.ee/bloxify") 
+end
+
+local requests = {
+    ["CurrentlyPlaying"] = {
+        Url = "https://api.spotify.com/v1/me/player/currently-playing",
+        Method = "GET",
+        Headers = {
+            ["Accept"] = "application/json",
+            ["Authorization"] = "Bearer " .. apikey,
+            ["Content-Type"] = "application/json"
+        }
+    },
+    ["NextSong"] = {
+        Url = "https://api.spotify.com/v1/me/player/next",
+        Method = "POST",
+        Headers = {
+            ["Accept"] = "application/json",
+            ["Authorization"] = "Bearer " .. apikey,
+            ["Content-Type"] = "application/json"
+        }
+    },
+    ["LastSong"] = {
+        Url = "https://api.spotify.com/v1/me/player/previous",
+        Method = "POST",
+        Headers = {
+            ["Accept"] = "application/json",
+            ["Authorization"] = "Bearer " .. apikey,
+            ["Content-Type"] = "application/json"
+        }
+    },
+    ["Pause"] = {
+        Url = "https://api.spotify.com/v1/me/player/pause",
+        Method = "PUT",
+        Headers = {
+            ["Accept"] = "application/json",
+            ["Authorization"] = "Bearer " .. apikey,
+            ["Content-Type"] = "application/json"
+        }
+    },
+    ["Play"] = {
+        Url = "https://api.spotify.com/v1/me/player/play",
+        Method = "PUT",
+        Headers = {
+            ["Accept"] = "application/json",
+            ["Authorization"] = "Bearer " .. apikey,
+            ["Content-Type"] = "application/json"
+        }
+    },
+}
+
+local http = game:GetService("HttpService")
+local uis = game:GetService("UserInputService")
+local startergui = game:GetService("StarterGui")
+local repStorage = game:GetService("ReplicatedStorage")
+
+local CurrentAlbumCover = Drawing.new("Image")
+local Result_Uri = Instance.new("StringValue")
+
+local plrChat = function(...) 
+	repStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(..., "All")
+end
+
+local notify = function(title, message, duration)
+    startergui:SetCore("SendNotification", {
+        Title = title,
+        Text = message,
+        Duration = duration,
+        Button1 = "OK"
+    })
+end
+
+local char_to_hex = function(c)
+    return string.format("%%%02X", string.byte(c))
+end
+
+local urlencode = function(url)
+    if (url == nil) then
+        return
+    end
+
+    url = url:gsub("\n", "\r\n")
+    url = url:gsub("([^%w _%%%-%.~])", char_to_hex)
+    url = url:gsub(" ", "+")
+    return url
+end
+
+local hex_to_char = function(x)
+    return string.char(tonumber(x, 16))
+end
+
+local urldecode = function(url)
+    if (url == nil) then
+        return
+    end
+
+    url = url:gsub("+", " ")
+    url = url:gsub("%%(%x%x)", hex_to_char)
+    return url
+end
+
+local searchSongs = function(query, limit)
+    local resp =
+        syn.request(
+        {
+            Url = "https://api.spotify.com/v1/search?q=" .. urlencode(query) .. "&type=track&limit=" .. limit,
+            Method = "GET",
+            Headers = {
+                ["Accept"] = "application/json",
+                ["Authorization"] = "Bearer " .. apikey,
+                ["Content-Type"] = "application/json"
+            }
+        }
+    )
+
+    return http:JSONDecode(resp.Body)
+end
+
+local addSong = function(uri)
+    local resp = syn.request({
+        Url = "https://api.spotify.com/v1/me/player/queue?uri=" .. urlencode(uri),
+        Method = "POST",
+        Headers = {
+            ["Accept"] = "application/json",
+            ["Authorization"] = "Bearer " .. apikey,
+            ["Content-Type"] = "application/json"
+        }
+    })
+end
+
+notify("ROBLOX Spotify", "Successfully loaded!\nPress Left Alt to open and close!", 2.5)
+
+uis.InputBegan:Connect(
+    function(input, bruh)
+        if (input.KeyCode == Enum.KeyCode.LeftAlt) then
+            if (Main.Visible == true) then
+                Main.Visible = false
+
+                if (CurrentAlbumCover.Visible == true) then
+                    CurrentAlbumCover.Visible = false
+                end
+            elseif (Main.Visible == false) then
+                Main.Visible = true
+
+                if (CurrentAlbumCover.Visible == false) then
+                    CurrentAlbumCover.Visible = true
+                end
+            end
+        end
+    end
+)
+
+SkipNext.MouseButton1Down:Connect(
+    function()
+        syn.request(requests["NextSong"])
+    end
+)
+
+SkipPrevious.MouseButton1Down:Connect(
+    function()
+        syn.request(requests["LastSong"])
+    end
+)
+
+SearchBox.TextBox.FocusLost:Connect(
+    function(enterPressed, bruh)
+        if (not enterPressed) then
+            return
+        end
+
+        for _, v in next, Search.ScrollingFrame:GetChildren() do
+            if (not v:IsA("Frame") or v.Name == "ExampleResult") then
+                continue
+            end
+
+            v:Destroy()
+        end
+
+        local songs = searchSongs(SearchBox.TextBox.Text, 20)
+        if (songs.error) then
+            notify("Oh no! An error occurred!", songs.error.message, 0.5)
+            return
+        end
+
+        for i, v in next, songs.tracks.items do
+            local artists = v.artists
+            local artistString = artists[1].name
+    
+            for i, v in next, artists do
+                if (v.name == artists[1].name) then
+                    continue
+                end
+    
+                artistString = artistString .. ", " .. v.name
+            end
+
+            local newItem = ExampleResult:Clone()
+            newItem.Parent = Search.ScrollingFrame
+            newItem.Name = v.name
+            newItem.Visible = true
+            newItem.Result_Artist.Text = artistString
+            newItem.Result_Title.Text = v.name
+            newItem.Result_Uri.Value = v.uri
+
+            newItem.Result_Clicked.MouseButton1Click:Connect(function() 
+                addSong(newItem.Result_Uri.Value)
+                syn.request(requests["NextSong"])
+            end)
+        end
+    end
+)
+
+PausePlay.MouseButton1Down:Connect(
+    function()
+        if (currentSong == nil) then 
+            return 
+        end
+
+        if currentSong.is_playing == true then
+            syn.request(requests["Pause"])
+
+            PausePlay.Pause.Visible = false
+            PausePlay.Play.Visible = true
+        elseif currentSong.is_playing == false then
+            syn.request(requests["Play"])
+            PausePlay.Pause.Visible = true
+            PausePlay.Play.Visible = false
+        end
+    end
+)
+
+local function GTZVDOE_fake_script()
+    local script = Instance.new("LocalScript", CurrentlyPlaying)
+
+    local artistLabel = script.Parent.Artist
+    local titleLabel = script.Parent.Title
+    local previousSong = nil
+    while wait() do
+        local resp = syn.request(requests["CurrentlyPlaying"])
+
+        if (resp.Body == "") then
+            artistLabel.Text = "N/A"
+            titleLabel.Text = "Nothing is currently playing!"
+            CurrentAlbumCover.Data = ""
+            print(resp.Body)
+
+            continue
+        end
+        
+        currentSong = http:JSONDecode(resp.Body)
+
+        if (currentSong.error) then
+            notify("Oh no! An error occurred!", currentSong.error.message, 0.5)
+            wait(3)
+            continue
+        elseif ((currentSong.item == nil) or (previousSong and previousSong == currentSong.item.name)) then
+            continue
+        elseif (previousSong ~= currentSong.item.name) then
+            notify("Now Playing!", currentSong.item.name .. "\nBy " .. currentSong.item.artists[1].name, 0.5)
+
+            previousSong = currentSong.item.name
+        end
+
+        local artists = currentSong.item.artists
+        local artistString = artists[1].name
+
+        for i, v in next, artists do
+            if (v.name == artists[1].name) then
+                continue
+            end
+
+            artistString = artistString .. ", " .. v.name
+        end
+
+        CurrentAlbumCover.Data = game:HttpGet(tostring(currentSong.item.album.images[3].url))
+        artistLabel.Text = artistString
+        titleLabel.Text = currentSong.item.name
+
+        print("playing " .. currentSong.item.name)
+    end
+
+    artistLabel.Text = "N/A"
+    titleLabel.Text = "Nothing is currently playing!"
+    CurrentAlbumCover.Data = ""
+    print(resp.Body)
+end
+
+coroutine.wrap(GTZVDOE_fake_script)()
